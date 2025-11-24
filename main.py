@@ -11,26 +11,31 @@ def send(text):
     requests.post(url, data={"chat_id": CHANNEL_ID, "text": text})
 
 def scan():
-    url = "https://public-api.birdeye.so/public/defi/tokens?sort_by=mc&sort_type=asc&offset=0&limit=50"
-    headers = {"X-API-KEY": "birdeye_api_key_here"}
-    data = requests.get(url, headers=headers).json()
+    # DexScreener newest Solana pairs
+    url = "https://api.dexscreener.com/latest/dex/pairs/solana"
+    data = requests.get(url).json()
 
-    for token in data.get("data", []):
-        addr = token["address"]
-        if addr in SEEN:
+    for pair in data.get("pairs", []):
+        token = pair["baseToken"]["address"]
+
+        if token in SEEN:
             continue
 
-        mcap = token.get("mc", 0)
-        vol = token.get("v24hUSD", 0)
+        # filter mcap + volume
+        mcap = pair.get("fdv", 0)
+        vol = pair.get("volume", {}).get("h24", 0)
 
-        if mcap < 50000 and vol > 10000:
-            SEEN.add(addr)
+        if mcap and mcap < 50000 and vol and vol > 10000:
+            SEEN.add(token)
+
             msg = f"""
-🔥 New Solana Gem!
-Address: {addr}
-Market Cap: ${mcap}
-24H Volume: ${vol}
-"""
+🔥 New Solana Gem Found!
+📍 Address: {token}
+💰 Market Cap: ${mcap}
+📈 24H Volume: ${vol}
+🔗 Link: {pair['url']}
+            """
+
             send(msg)
 
 while True:
