@@ -1,16 +1,17 @@
 {
-  "name": "1g-tracker-pro",
-  "version": "2.0.0",
-  "main": "server.js",
+  "name": "1g-tracker-pro-full",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "dependencies": {
+    "@solana/web3.js": "^1.66.0",
     "axios": "^1.6.8",
-    "dotenv": "^16.4.5",
-    "express": "^4.18.2",
     "telegraf": "^4.16.3",
-    "node-cron": "^3.0.3"
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "node-cron": "^3.0.2",
+    "fs-extra": "^11.1.1"
   }
 }
